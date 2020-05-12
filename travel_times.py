@@ -2,12 +2,7 @@ import googlemaps
 import csv
 from apikey import key
 
-# B - Public Transit (excluding GO Rail)
-# C - Bicycle
-# D - Auto Driver
-# S - School Bus
-# T -Taxi
-# W -Walk
+# load your api key
 g_maps = googlemaps.Client(key=key)
 
 
@@ -17,8 +12,8 @@ def get_travel_time(o, d, mode):
                                      language="en",
                                      region=".ca",
                                      units="metric",
-                                     departure_time="1562140800",
-                                     traffic_model="best_guess")
+                                     departure_time="1589356800",
+                                     traffic_model="pessimistic")
     if mode == "driving":
         try:
             t_time = consult["rows"][0]["elements"][0]["duration_in_traffic"]['value']
@@ -37,8 +32,8 @@ def get_travel_time(o, d, mode):
     return t_time, dist
 
 
-with open('Coordinates_Oakville_Johannes.csv', 'r') as csvinput:
-    with open('Oakville_trips_tt_and_d.csv', 'w') as csvoutput:
+with open('data/o-d.csv', 'r') as csvinput:
+    with open('data/o-d_travel_times.csv', 'w') as csvoutput:
         writer = csv.writer(csvoutput, lineterminator='\n')
         reader = csv.reader(csvinput)
         all = []
@@ -49,18 +44,10 @@ with open('Coordinates_Oakville_Johannes.csv', 'r') as csvinput:
         # send api code
         i = 0
         for row in reader:
-            # ID,origY,origX,destY,destX
-            # print(row[0])
-            origin = (row[1], row[2])
-            destination = (row[3], row[4])
-            if row[0] == "D" or row[0] == "S" or row[0] == "T":
-                travel_time, distance = get_travel_time(origin, destination, "driving")
-            if row[0] == "C":
-                travel_time, distance = get_travel_time(origin, destination, "bicycling")
-            if row[0] == "B":
-                travel_time, distance = get_travel_time(origin, destination, "transit")
-            if row[0] == "W":
-                travel_time, distance = get_travel_time(origin, destination, "walking")
+            # The pair is (y,x) or (Lat,Long)
+            origin = (row[1], row[0])
+            destination = (row[3], row[2])
+            travel_time, distance = get_travel_time(origin, destination, "driving")
             row.append(travel_time)
             row.append(distance)
             all.append(row)
