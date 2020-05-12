@@ -46,6 +46,7 @@ with open('Coordinates_Oakville_Johannes.csv', 'r') as csvinput:
         row.append('Travel_Time(sec)')
         row.append('Distance(mts)')
         all.append(row)
+        # send api code
         i = 0
         for row in reader:
             # ID,origY,origX,destY,destX
