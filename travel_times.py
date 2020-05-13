@@ -4,16 +4,16 @@ from apikey import key
 
 # load your api key
 g_maps = googlemaps.Client(key=key)
-
-
+# 1602144000
+# 1589443200
 def get_travel_time(o, d, mode):
     consult = g_maps.distance_matrix(o, d,
                                      mode=mode,
                                      language="en",
                                      region=".ca",
                                      units="metric",
-                                     departure_time="1589356800",
-                                     traffic_model="pessimistic")
+                                     departure_time="1589443200",
+                                     traffic_model="best_guess")
     if mode == "driving":
         try:
             t_time = consult["rows"][0]["elements"][0]["duration_in_traffic"]['value']
@@ -53,5 +53,4 @@ with open('data/o-d.csv', 'r') as csvinput:
             all.append(row)
             print(i)
             i += 1
-
         writer.writerows(all)
